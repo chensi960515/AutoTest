@@ -27,7 +27,7 @@ def GToken():
         res = ya.get_data_list('../config/token.yaml')
         expires = res['expires']
         now = int(round(time.time() * 1000))
-
+        logger.info("每一个用例文件会创建一次这个方法的对象")
         if now < expires:
             token = res['token']
             return token
