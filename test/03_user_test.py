@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
 # @Time : 2022/3/21 10:40
 # @Author : chensi
-# @File : test_user.py
+# @File : 03_user_test.py
 # @Project : CVATest
 
 import json
 import pytest
 import allure
 import time
-from api import client, step_pack
+from api import client_pack, step_pack
 from tools import logger
 from tools import read_yaml
 from tools import GToken
 
-client = client.Client()
+client = client_pack.ClientPack()
 ya = read_yaml.GetPages()
-
-token = GToken()
 
 
 @allure.feature('新增用户')
@@ -27,7 +25,7 @@ class TestUser:
     @allure.title("新增用户")
     @pytest.mark.skip(reason="暂未提供删除用户接口,无法进行后置处理,暂跳过该用例")
 #    @pytest.mark.run(order=2)
-    def test_addUser_0(self):
+    def test_addUser_0(self,get_token):
         cus = int(time.time())
         data = {
                     "customerId":"U10000247892",
@@ -40,7 +38,7 @@ class TestUser:
                     "phoneJoinPermission":"1",
                     "depName":"/test",
                     "isSendEmail":"1",
-                    "token":token
+                    "token":get_token
                 }
         response = client.send_request('POST', '/cvoa/openapi/addUser', parms_type='json', data=data)
         assert step_pack.assert_code(300, response['response_code'])

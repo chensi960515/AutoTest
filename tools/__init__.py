@@ -16,6 +16,7 @@ from loguru import logger
 from tools import read_yaml
 from tools.hooks import *
 
+
 ya = read_yaml.GetPages()
 
 logger.add(sink="../logs/{time:YYYYMMDD}.log", format=" {time:YYYY-MM-DD at HH:mm:ss}| {level} | {function}|{message}",
@@ -32,7 +33,7 @@ def GToken():
             token = res['token']
             return token
         else:
-            logger.error("Token已失效,需要重新获取token")
+            logger.error("Token已失效,需新获取token")
             raise
     except Exception:
         logger.error("获取token失败", Exception)

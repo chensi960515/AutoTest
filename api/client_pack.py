@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Time : 2022/3/15 11:38
 # @Author : chensi
-# @File : client.py.py
+# @File : client_pack.py.py
 # @Project : CVATest
 import json
 from typing import Any
@@ -18,7 +18,7 @@ class Transmission:
     JSON: str = "json"
 
 
-class Client(Session):
+class ClientPack(Session):
 
     def __init__(self):
         self.session = requests.Session()
