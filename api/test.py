@@ -8,6 +8,7 @@ import json
 import yaml
 import ast
 import time
+import datetime
 from tools import GToken
 
 from tools import read_yaml
@@ -63,6 +64,7 @@ for i in range(1,1000):
 logger.info(partyList)
 """
 
-# print(int(round(time.time() * 1000)))
+# print(int(round(time.time() * 1000))+1800000)
 
-print(int(time.time()))
+MeetId = ['11222','2333333']
+print(MeetId[0])

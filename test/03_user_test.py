@@ -24,7 +24,7 @@ class TestUser:
     @allure.severity("blocker")
     @allure.title("新增用户")
     @pytest.mark.skip(reason="暂未提供删除用户接口,无法进行后置处理,暂跳过该用例")
-#    @pytest.mark.run(order=2)
+    @pytest.mark.run(order=2)
     def test_addUser_0(self,get_token):
         cus = int(time.time())
         data = {

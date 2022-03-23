@@ -27,12 +27,13 @@ class TestToken:
     @allure.story("正向请求接口")
     @allure.severity("blocker")
     @allure.title("获取token并存储后续使用")
-#    @pytest.mark.run(order=1)
+    @pytest.mark.run(order=1)
     def test_token_0(self):
         data = '{"customerId": "U10000247892","secret": "abc123bcd"}'
         response = client.send_request('POST', '/cvoa/openapi/token', parms_type='json', data=data)
         assert step_pack.assert_code(200, response['response_code'])
         assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])
+        logger.info(response)
 
         # token存储
         res = json.loads(response['response_body'])
@@ -65,7 +66,7 @@ class TestToken:
 
     @allure.story("反向用例的story")
     @allure.title("请求参数为空,status = 1004")
-#    @pytest.mark.run(order=3)
+    @pytest.mark.run(order=3)
     def test_token_1004(self):
         data = '{"customerId": "","secret": ""}'
         response = client.send_request('POST', '/cvoa/openapi/token', parms_type='json', data=data)
@@ -74,7 +75,7 @@ class TestToken:
 
     @allure.story("反向用例的story")
     @allure.title("密码错误,status = 1005")
-#    @pytest.mark.run(order=3)
+    @pytest.mark.run(order=3)
     def test_token_1005(self):
         data='{"customerId": "U10000247892","secret": "abc123bcd11"}'
         response = client.send_request('POST', '/cvoa/openapi/token', parms_type='json', data=data)
@@ -83,7 +84,7 @@ class TestToken:
 
     @allure.story("反向用例的story")
     @allure.title("企业客户ID错误,status = 1008")
-#    @pytest.mark.run(order=3)
+    @pytest.mark.run(order=3)
     def test_token_1008(self):
         data = '{"customerId": "U100002478921","secret": "abc123bcd"}'
         response = client.send_request('POST', '/cvoa/openapi/token', parms_type='json', data=data)
