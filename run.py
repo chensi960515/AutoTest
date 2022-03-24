@@ -8,5 +8,5 @@
 import pytest
 
 if __name__ == '__main__':
-    pytest.main(["./"])
-    # pytest.main() 默认也可以
+    pytest.main(['./test'])
+    #   pytest . -s -q --alluredir=./result --clean-alluredir

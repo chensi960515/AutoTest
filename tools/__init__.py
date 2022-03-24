@@ -8,6 +8,7 @@ import re
 from string import Template
 from typing import Any
 
+import sys
 import allure
 import time
 import json
@@ -16,11 +17,13 @@ from loguru import logger
 from tools import read_yaml
 from tools.hooks import *
 
-
 ya = read_yaml.GetPages()
 
-logger.add(sink="../logs/{time:YYYYMMDD}.log", format=" {time:YYYY-MM-DD at HH:mm:ss}| {level} | {function}|{message}",
-           rotation="24h")
+# logger.add(sink="../logs/{time:YYYYMMDD}.log", format=" {time:YYYY-MM-DD at HH:mm:ss}| {level} | {function}|{message}",
+#            rotation="24h")
+logger.add(sink="../logs/{time:YYYYMMDD}.log",
+           format=" <green>{time:YYYY-MM-DD at HH:mm:ss}</green> | {level} | {function} |<level>{message}</level>",
+           rotation="24h", backtrace=True, diagnose=True)
 
 
 def GToken():

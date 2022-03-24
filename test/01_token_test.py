@@ -7,13 +7,14 @@ import json
 
 import allure
 import pytest
+from pathlib import Path
 from api import client_pack, step_pack
 from tools import logger
 from tools import read_yaml
 
 client = client_pack.ClientPack()
 ya = read_yaml.GetPages()
-
+config_path = f"{str(Path(__file__).parent.parent)}/config/config.yaml"
 
 
 @allure.feature('token接口测试')
@@ -33,20 +34,19 @@ class TestToken:
         response = client.send_request('POST', '/cvoa/openapi/token', parms_type='json', data=data)
         assert step_pack.assert_code(200, response['response_code'])
         assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])
-        logger.info(response)
 
         # token存储
         res = json.loads(response['response_body'])
         token = res['data']['token']
         expires = res['data']['expires']
-        yy = ya.get_data_list('../config/token.yaml')
+        yy = ya.get_data_list(config_path)
         logger.info(token)
         yy['token'] = token
         yy['expires'] = expires
-        ya.dump_dict(yy, '../config/token.yaml')
-
+        ya.dump_dict(yy, config_path)
 
         # @allure.story("反向用例的story")
+
     # @allure.title("customerId不存在,status = 1008")
     # def test_token_1008(self):
     #     data = '{"customerId": "U100002478921","secret": "abc123bcd"}'
@@ -77,7 +77,7 @@ class TestToken:
     @allure.title("密码错误,status = 1005")
     @pytest.mark.run(order=3)
     def test_token_1005(self):
-        data='{"customerId": "U10000247892","secret": "abc123bcd11"}'
+        data = '{"customerId": "U10000247892","secret": "abc123bcd11"}'
         response = client.send_request('POST', '/cvoa/openapi/token', parms_type='json', data=data)
         assert step_pack.assert_code(200, response['response_code'])
         assert step_pack.assert_in_body('"status":1005,"message":"secret错误"', response['response_body'])
@@ -90,4 +90,3 @@ class TestToken:
         response = client.send_request('POST', '/cvoa/openapi/token', parms_type='json', data=data)
         assert step_pack.assert_code(200, response['response_code'])
         assert step_pack.assert_in_body('"status":1008,"message":"客户配置异常"', response['response_body'])
-

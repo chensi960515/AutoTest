@@ -17,7 +17,7 @@ from tools import GToken
 client = client_pack.ClientPack()
 ya = read_yaml.GetPages()
 
-
+@pytest.mark.skip(reason="暂未提供删除用户接口,无法进行后置处理,暂跳过该用例")
 @allure.feature('会议接口')
 class TestUser():
 
@@ -51,16 +51,16 @@ class TestUser():
             "enableLive": 1,
             "helperPassword": "123456",
             "livePassword": "333333",
-            "liveStartTime": (cus+1800000),
+            "liveStartTime": (cus+600000),
             "meetLock": 1,
-            "meetNumber": "会议编号"+ str(cus + 1800000),
+            "meetNumber": "会议编号"+ str(cus + 600000),
             "participantList": [
                 {
                     "account": "",
                     "userId": ""
                 }
             ],
-            "startTime": (cus+1800000),
+            "startTime": (cus+600000),
             "remindTime": 1,
             "title": "测试预约会议创建",
             "userId": "100003718219",
@@ -70,8 +70,9 @@ class TestUser():
         assert step_pack.assert_code(200, response['response_code'])
         assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])
         res = json.loads(response['response_body'])
-        global global_meetId_2
+        global global_meetId_2 ,MeetLink
         global_meetId_2 = res['data']['meetId']
+        MeetLink = res['data']['hostMeetLink']
 
     @allure.story("预约会议反向请求接口")
     @allure.title("预约会议-填写错误参数(userid不存在)")
@@ -182,11 +183,10 @@ class TestUser():
 
 
     @allure.story("取消会议正向请求接口")
-    @allure.severity("blocker")
     @allure.title("取消会议-只填写必填参数")
     @pytest.mark.run(order=2)
     @allure.description('取消会议接口验证-/cvoa/openapi/cancelMeet')
-    def test_cancelMeet_1(self, get_token):
+    def test_cancelMeet_0(self, get_token):
         data = {
             "meetId": global_meetId_1,
           #  "userId": "100003718219",
@@ -196,19 +196,46 @@ class TestUser():
         assert step_pack.assert_code(200, response['response_code'])
         assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])
 
-    #
-    # @allure.story("加入会议正向请求接口(登录用户)")
-    # @allure.severity("blocker")
-    # @allure.title("编辑会议-只填写必填参数")
-    # @pytest.mark.run(order=2)
-    # @allure.description('预约会议接口验证-/cvoa/openapi/userJoinMeet')
-    # def test_cancelMeet_2(self, get_token):
-    #     data = {
-    #         "meetId": global_meetId_2,
-    #         "userId": "100003718219",
-    #         "token": get_token
-    #     }
-    #     response = client.send_request('POST', '/cvoa/openapi/userJoinMeet', parms_type='json', data=data)
-    #     assert step_pack.assert_code(200, response['response_code'])
-    #     assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])
-    #
+
+    @allure.story("加入会议正向请求接口")
+    @allure.title("登录用户加入会议-userJoinMeet")
+    @pytest.mark.run(order=2)
+    @allure.description('预约会议接口验证-/cvoa/openapi/userJoinMeet')
+    def test_userJoinMeet_0(self, get_token):
+        data = {
+            "meetId": global_meetId_2,
+            "userId": "100003718219",
+            "token": get_token
+        }
+        response = client.send_request('POST', '/cvoa/openapi/userJoinMeet', parms_type='json', data=data)
+        assert step_pack.assert_code(200, response['response_code'])
+        assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])
+
+    @allure.story("加入会议正向请求接口")
+    @allure.title("游客加入会议-guestJoinMeet")
+    @pytest.mark.run(order=2)
+    @allure.description('预约会议接口验证-/cvoa/openapi/guestJoinMeet')
+    def test_guestJoinMeet_0(self, get_token):
+        data = {
+            "name": "游客加入AAA",
+            "meetId": global_meetId_2,
+            "token": get_token
+        }
+        response = client.send_request('POST', '/cvoa/openapi/guestJoinMeet', parms_type='json', data=data)
+        assert step_pack.assert_code(200, response['response_code'])
+        assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])
+
+    @allure.story("加入会议正向请求接口")
+    @allure.title("主持人加入会议-hostJoinMeet")
+    @pytest.mark.run(order=2)
+    @allure.description('预约会议接口验证-/cvoa/openapi/hostJoinMeet')
+    def test_guestJoinMeet_0(self, get_token):
+        data = {
+            "name": "主持人BBB",
+            "hostMeetLink": MeetLink,
+            "token": get_token
+        }
+        logger.info(data )
+        response = client.send_request('POST', '/cvoa/openapi/hostJoinMeet', parms_type='json', data=data)
+        assert step_pack.assert_code(200, response['response_code'])
+        assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])

@@ -9,11 +9,6 @@ import pytest
 from tools import logger
 
 
-@allure.step("step: 登录,获取并存储token")
-def cva_login(data):
-    '''获取token包装'''
-    pass
-
 
 @allure.step("step: 验证请求响应code码 ")
 def assert_code(except_code: int, response_code):

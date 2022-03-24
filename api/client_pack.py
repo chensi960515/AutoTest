@@ -7,6 +7,7 @@ import json
 from typing import Any
 import yaml
 import requests
+from pathlib import Path
 from requests import Session
 from tools import allure_step, allure_title, logger, allure_step_no
 from tools.data_process import DataProcess
@@ -22,18 +23,17 @@ class ClientPack(Session):
 
     def __init__(self):
         self.session = requests.Session()
+        config_path = f"{str(Path(__file__).parent.parent)}/config/config.yaml"
         try:
-            ya = open("../config/config.yaml", 'r', encoding='UTF-8')
+            ya = open(config_path, 'r', encoding='UTF-8')
             cfg = ya.read()
             ya.close()
             ya_dict = yaml.safe_load(cfg)
             self.host = ya_dict['server']['test']
             self.headers = ya_dict['request_headers']
         except Exception as e:
-            logger.error("读取config文件出错,具体信息为",e)
+            logger.error("读取config文件出错,具体信息为", e)
             raise
-
-
 
     def send_request(self, method, uri, parms_type='json', data=None, **kwargs):
         method = method.upper()
@@ -52,7 +52,8 @@ class ClientPack(Session):
                 response = self.session.request(headers=headers, method=method, url=host + uri, params=data, **kwargs)
             elif method == 'POST':
                 if parms_type == 'FORM':  # 判断是否是表单数据,传递data
-                    response = self.session.request(headers=headers, method=method, url=host + uri,data=json.dumps(data), **kwargs)
+                    response = self.session.request(headers=headers, method=method, url=host + uri,
+                                                    data=json.dumps(data), **kwargs)
                 elif parms_type == 'JSON':  # 判断是否传递applications/json , 若符合,直接传递json参数
                     response = self.session.request(headers=headers, method=method, url=host + uri, json=data, **kwargs)
                 else:  # 若需要传递其他类型数据,例如文件,调用下面内容
@@ -64,10 +65,10 @@ class ClientPack(Session):
             response_data['response_code'] = int(response.status_code)
             response_data['response_time'] = response.elapsed.total_seconds()
             response_data['response_body'] = response.text
-            logger.info(response_data)
+            logger.info("请求完成" + host + uri)
             return response_data
-        except Exception as  e:
-            logger.error("请求异常：" + str(e) + "请求失败,url:" +  host  + uri )
+        except Exception as e:
+            logger.error("请求异常：" + str(e) + ",url:" + host + uri)
             raise
 
     def __call__(self, method, uri, params_type='form', data=None, **kwargs):
@@ -152,6 +153,3 @@ class ClientPack(Session):
         allure_step_no(f"响应耗时(s): {res.elapsed.total_seconds()}")
         allure_step("响应结果", response)
         return response
-
-
-

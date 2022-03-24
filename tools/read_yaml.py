@@ -5,7 +5,6 @@
 # @Project : CVATest
 
 import yaml
-import os
 from tools import logger
 
 
