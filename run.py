@@ -5,8 +5,8 @@
 # @Project : CVATest
 
 
-import pytest
-
-if __name__ == '__main__':
-    pytest.main(['./test'])
+# import pytest
+#
+# if __name__ == '__main__':
+#     pytest.main(['./test'])
     #   pytest . -s -q --alluredir=./result --clean-alluredir

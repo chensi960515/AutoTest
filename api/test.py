@@ -12,7 +12,7 @@ import datetime
 from tools import GToken
 
 from tools import read_yaml
-
+import  requests
 ya = read_yaml.GetPages()
 
 from tools import logger
@@ -35,8 +35,8 @@ from tools import logger
 #
 # ya.dump_dict(res, '../config/config1.yaml')
 #
-res = GToken()
-print(res)
+# res = GToken()
+# print(res)
 
 """
 partyList=[
@@ -66,5 +66,9 @@ logger.info(partyList)
 
 # print(int(round(time.time() * 1000))+1800000)
 
-MeetId = ['11222','2333333']
-print(MeetId[0])
+# MeetId = ['11222','2333333']
+# print(MeetId[0])
+
+# response = requests.get('http://c.biancheng.net/uploads/course/python_spider/191009.html')
+# print(response)
+#

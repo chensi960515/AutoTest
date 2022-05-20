@@ -17,9 +17,9 @@ from tools import GToken
 client = client_pack.ClientPack()
 ya = read_yaml.GetPages()
 
-@pytest.mark.skip(reason="暂未提供删除用户接口,无法进行后置处理,暂跳过该用例")
+#@pytest.mark.skip(reason="暂未提供删除用户接口,无法进行后置处理,暂跳过该用例")
 @allure.feature('会议接口')
-class TestUser():
+class TestMeet():
 
     @allure.story("预约会议正向请求接口")
     @allure.severity("blocker")
@@ -143,7 +143,6 @@ class TestUser():
     def test_editMeet_1(self, get_token):
         data = {
             "meetId": global_meetId_1 ,
-           # "userId": "100003718219",
             "token": get_token
         }
         response = client.send_request('POST', '/cvoa/openapi/editMeet', parms_type='json', data=data)
@@ -158,7 +157,6 @@ class TestUser():
         data = {
             "agenda": '编辑后的会议议程',
             "meetId": global_meetId_1,
-           # "userId": "100003718219",
             "token": get_token
         }
         response = client.send_request('POST', '/cvoa/openapi/editMeet', parms_type='json', data=data)
@@ -174,7 +172,6 @@ class TestUser():
         data = {
             "startTime": (cus - 600000 ),
             "meetId": global_meetId_1,
-          #  "userId": "100003718219",
             "token": get_token
         }
         response = client.send_request('POST', '/cvoa/openapi/editMeet', parms_type='json', data=data)
@@ -229,13 +226,70 @@ class TestUser():
     @allure.title("主持人加入会议-hostJoinMeet")
     @pytest.mark.run(order=2)
     @allure.description('预约会议接口验证-/cvoa/openapi/hostJoinMeet')
-    def test_guestJoinMeet_0(self, get_token):
+    def test_hostJoinMeet_0(self, get_token):
         data = {
             "name": "主持人BBB",
             "hostMeetLink": MeetLink,
             "token": get_token
         }
-        logger.info(data )
         response = client.send_request('POST', '/cvoa/openapi/hostJoinMeet', parms_type='json', data=data)
         assert step_pack.assert_code(200, response['response_code'])
         assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])
+
+    """  
+        上述三个加入会议的case,执行成功,返回正常,但是在页面查看效果没有发现有用户进入到会议中   具体的原因未知,是否优化case不确定
+    """
+
+    @allure.story("日程单点登录正向请求接口")
+    @allure.title("快速登录日程管理-ssoLoginMeet")
+    @pytest.mark.run(order=2)
+    @allure.description('日程单点登录接口验证-/cvoa/openapi/ssoLoginMeet')
+    def test_ssoLoginMeet_0(self, get_token):
+        data = {
+            "userId": "100003718219",
+            "token": get_token
+        }
+        response = client.send_request('POST', '/cvoa/openapi/ssoLoginMeet', parms_type='json', data=data)
+        assert step_pack.assert_code(200, response['response_code'])
+        assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])
+
+
+    @allure.story("查询云视会议正向请求接口")
+    @allure.title("查询云视会议-queryMeetInfo")
+    @pytest.mark.run(order=2)
+    @allure.description('查询会议接口验证-/cvoa/openapi/queryMeetInfo')
+    def test_queryMeetInfo_0(self, get_token):
+        data = {
+            "meetId": global_meetId_2,
+            "token": get_token
+        }
+        response = client.send_request('POST', '/cvoa/openapi/queryMeetInfo', parms_type='json', data=data)
+        assert step_pack.assert_code(200, response['response_code'])
+        assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])
+
+    @allure.story("立即开会正向请求接口")
+    @allure.title("立即开会-immediateMeetMeet")
+    @pytest.mark.run(order=2)
+    @allure.description('立即开会接口验证-/cvoa/openapi/immediateMeetMeet')
+    def test_immediateMeetMeet_0(self, get_token):
+        data = {
+            "meetId": global_meetId_2,
+            "token": get_token
+        }
+        response = client.send_request('POST', '/cvoa/openapi/immediateMeetMeet', parms_type='json', data=data)
+        assert step_pack.assert_code(200, response['response_code'])
+        assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])
+
+
+    @allure.story("取消会议做后置处置")
+    @allure.title("取消会议-后置处理")
+    @pytest.mark.run(order=3)
+    def test_cancelMeet_1(self, get_token):
+        data = {
+            "meetId": global_meetId_2,
+            "token": get_token
+        }
+        response = client.send_request('POST', '/cvoa/openapi/cancelMeet', parms_type='json', data=data)
+        assert step_pack.assert_code(200, response['response_code'])
+        assert step_pack.assert_in_body('"status":0,"message":"成功"', response_body=response['response_body'])
+

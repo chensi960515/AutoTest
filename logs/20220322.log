@@ -1,8 +1,0 @@
- 2022-03-22 at 16:36:53| INFO | log|开始读取../config/token.yaml文件
- 2022-03-22 at 16:36:53| ERROR | GToken|Token已失效,需要重新获取token
- 2022-03-22 at 16:36:53| ERROR | GToken|获取token失败
- 2022-03-22 at 16:36:53| INFO | log|开始读取../config/token.yaml文件
- 2022-03-22 at 16:36:53| ERROR | GToken|Token已失效,需要重新获取token
- 2022-03-22 at 16:36:53| ERROR | GToken|获取token失败
- 2022-03-22 at 16:36:53| INFO | send_request|{'response_code': 200, 'response_time': 0.178302, 'response_body': '{"status":1002,"message":"token验证异常","responseTime":1647938213505,"host":"192.168.206.106","tag":null,"logKey":"8a6c537d4fe9439ebd570bae0ea9469e","data":null}'}
- 2022-03-22 at 16:36:53| ERROR | assert_in_body|响应body对比失败,响应body为:{"status":1002,"message":"token验证异常","responseTime":1647938213505,"host":"192.168.206.106","tag":null,"logKey":"8a6c537d4fe9439ebd570bae0ea9469e","data":null},断言body为:"status":0,"message":"成功"
