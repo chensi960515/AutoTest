@@ -7,7 +7,22 @@
 import requests
 import json
 import time
+import xlrd
 
+
+def read_xlrd(excelFile):
+    data = xlrd.open_workbook(excelFile)
+    table = data.sheet_by_index(0)
+    dataFile = []
+    res = []
+
+    for rowNum in range(table.nrows):
+        dataFile.append(table.row_values(rowNum))
+
+    for i in dataFile:
+        res.append(i[0])
+
+    return res
 
 def get_Token():
     url = "https://apipcstest.263.net/api/getToken"
@@ -29,12 +44,11 @@ def get_Token():
 token = get_Token()
 
 
-def create_Meeting():
+def create_Meeting(phone,time):
     url = "https://apipcstest.263.net/api/createMeeting"
 
     payload = json.dumps({
-        "token": "bdce13021f854dffab93566536702d06",
-        "tag": "ejhk9t23O1o4",
+        "token": token,
         "userAccount": "xu.chen1@net263.com",
         "meetingTitle": "验证接口创建会议33333",
         "startTime": "",
@@ -78,7 +92,7 @@ def create_Meeting():
         ],
         "contactList": [
             {
-                "contactName": "测试",
+                "contactName": "紧急联络人列表",
                 "contactTelephone": "17782320290",
                 "contactEmail": "119669@net263.com"
             }
@@ -93,6 +107,8 @@ def create_Meeting():
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
+    return response.text
 
-    print(response.text)
 
+
+print(create_Meeting())
