@@ -7,15 +7,31 @@
 import requests
 import json
 import time
+import xlrd
 
+def read_xlrd(excelFile,list_index):
+    data = xlrd.open_workbook(excelFile)
+    table1 = data.sheet_by_index(list_index)
+    dataFile = []
+    res = []
+
+    for rowNum in range(table1.nrows):
+        dataFile.append(table1.row_values(rowNum))
+
+    for i in dataFile:
+        if len(i[0]) > 0:
+            res.append(i[0])
+
+    return res
 
 
 def get_Token():
-        url = "https://meetapitest.263.net/meet/sec/api/getToken"
+      #  url = "https://meetapitest.263.net/meet/sec/api/getToken"       #测试API
+        url = "https://meetapi.263.net/meet/sec/api/getToken"
 
         payload = json.dumps({
-          "customerId": "U10000247885",
-          "secret": "123456"
+          "customerId": "U11001346548",
+          "secret": "WiOroBTHdM1U6wwukO9Y7EzD927nVrhZ"
         })
         headers = {
           'Content-Type': 'application/json'
@@ -26,31 +42,30 @@ def get_Token():
         new_token  = res['data']['token']
         return new_token
 
-token = get_Token()
 
-def create_Meeting():
-        url = "https://meetapitest.263.net/meet/sec/api/createMeeting"
+def create_Meeting(token , time_number, start_time , phoneNumber_host , phoneNumber_guset):
+        url = "https://meetapi.263.net/meet/sec/api/createMeeting"
 
         payload = json.dumps({
-                "userAccount": "xu.chen1@net263.com",
-                "meetingCode": "test"+str(time.time()),
+                "userAccount": "cxtest1@net263.com",
+                "meetingCode": "线上预约畅听会议,第"+ str(time_number)+"场",
                 "token": token,
-                "meetingTitle": "测试预约会议"+str(time.time()),
-                "startTime": 1653209013000,    #毫秒单位
+                "meetingTitle": "线上测试预约会议"+str(time.time()),
+                "startTime": start_time,    #毫秒单位
                 "durationMinute": 120,
-                "speaker": "主讲人222",
-                "vip": "嘉宾222",
+                "speaker": "主讲人test",
+                "vip": "嘉宾test",
                 "partyList": [
                         {
                                 "partyName": "主持人",
                                 "partyType": "HOST",
-                                "phoneNumber": "16621292683",
+                                "phoneNumber": phoneNumber_host,
                                 "partyEmail": "263TestUser1@net263.com"
                         },
                         {
                                 "partyName": "测试用户01",
                                 "partyType": "GUEST",
-                                "phoneNumber": "13823531653",
+                                "phoneNumber": phoneNumber_guset,
                                 "partyEmail": "263TestUser2@net263.com"
                         }
                 ]
@@ -59,8 +74,15 @@ def create_Meeting():
                 'Content-Type': 'application/json'
         }
 
-        response = requests.request("GET", url, headers=headers, data=payload)
+        response = requests.request("POST", url, headers=headers, data=payload)
+        return response
 
-        print(response.text)
+excelFile = "D:\\263\\测试虚拟账号.xlsx"
+res_true = read_xlrd(excelFile=excelFile,list_index=0)
+res_false = read_xlrd(excelFile=excelFile,list_index=1)
 
-print(create_Meeting())
+token = get_Token()
+
+for i in range(1,21):
+        create_Meeting(token =token , time_number = i,start_time= time.time()/1000, phoneNumber_host = res_true[i] ,phoneNumber_guset= res_true[20+i])
+
