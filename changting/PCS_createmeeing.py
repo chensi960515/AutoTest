@@ -10,7 +10,7 @@ import time
 import xlrd
 
 
-def read_xlrd(excelFile,list_index):
+def read_xlrd(excelFile, list_index):
     data = xlrd.open_workbook(excelFile)
     table1 = data.sheet_by_index(list_index)
     dataFile = []
@@ -43,18 +43,19 @@ def get_Token():
     return new_token
 
 
-def create_Meeting_one(token,times,start_time,party_partyTel_0,party_partyTel_1,callOutType_custom):
+def create_Meeting_one(token, times, start_time, party_partyTel_0, party_partyTel_1,
+                       callOutType_custom):
     url = "https://apipcs.263.net/api/createMeeting"
 
     payload_client_one = json.dumps({
         "token": token,
         "userAccount": "cx@net263.com",
-        "meetingTitle": "线上接口创建会议,第"+str(times)+"场",
+        "meetingTitle": "第0" + str(times) + "场" + str(partyName_A),
         "startTime": start_time,
         "duration": "120",
         "partyList": [
             {
-                "partyName": "顾问A",
+                "partyName": party_partyTel_0,
                 "partyType": "0",
                 "countryCode": "",
                 "areaCode": "",
@@ -63,7 +64,7 @@ def create_Meeting_one(token,times,start_time,party_partyTel_0,party_partyTel_1,
                 "isCallOut": "1"
             },
             {
-                "partyName": "客户1",
+                "partyName": party_partyTel_1,
                 "partyType": "1",
                 "countryCode": "",
                 "areaCode": "5678",
@@ -82,7 +83,7 @@ def create_Meeting_one(token,times,start_time,party_partyTel_0,party_partyTel_1,
         "callOutType": callOutType_custom,
         "isRecord": "1",
         "joinType": 1,
-        "meetingExplain": "预约倾听会议,类型为"+str(callOutType_custom)
+        "meetingExplain": "预约倾听会议,类型为" + str(callOutType_custom)
     })
     headers = {
         'Content-Type': 'application/json'
@@ -92,18 +93,18 @@ def create_Meeting_one(token,times,start_time,party_partyTel_0,party_partyTel_1,
     return response.text
 
 
-def create_Meeting_two(token,times,start_time,party_partyTel_0,party_partyTel_1,party_partyTel_2,callOutType_custom):
+def create_Meeting_two(token, times, start_time, partyName_A, partyName_B, partyName_C, callOutType_custom):
     url = "https://apipcs.263.net/api/createMeeting"
 
     payload_client_two = json.dumps({
         "token": token,
         "userAccount": "cx@net263.com",
-        "meetingTitle": "线上接口创建会议,第"+str(times)+"场",
+        "meetingTitle": "第0" + str(times) + "场" + str(partyName_A),
         "startTime": start_time,
         "duration": "120",
         "partyList": [
             {
-                "partyName": "顾问B",
+                "partyName": party_partyTel_0,
                 "partyType": "0",
                 "countryCode": "",
                 "areaCode": "",
@@ -112,7 +113,7 @@ def create_Meeting_two(token,times,start_time,party_partyTel_0,party_partyTel_1,
                 "isCallOut": "1"
             },
             {
-                "partyName": "客户1",
+                "partyName": party_partyTel_1,
                 "partyType": "1",
                 "countryCode": "",
                 "areaCode": "5678",
@@ -121,7 +122,7 @@ def create_Meeting_two(token,times,start_time,party_partyTel_0,party_partyTel_1,
                 "isCallOut": "1"
             },
             {
-                "partyName": "客户2",
+                "partyName": party_partyTel_2,
                 "partyType": "1",
                 "countryCode": "86",
                 "partyTel": party_partyTel_2,
@@ -139,7 +140,7 @@ def create_Meeting_two(token,times,start_time,party_partyTel_0,party_partyTel_1,
         "callOutType": callOutType_custom,
         "isRecord": "1",
         "joinType": 1,
-        "meetingExplain": "预约倾听会议,类型为"+str(callOutType_custom)
+        "meetingExplain": "预约倾听会议,类型为" + str(callOutType_custom)
     })
     headers = {
         'Content-Type': 'application/json'
@@ -149,19 +150,21 @@ def create_Meeting_two(token,times,start_time,party_partyTel_0,party_partyTel_1,
     return response.text
 
 
-
-
-excelFile = "D:\\263\\生产电话1.xlsx"
-res_true = read_xlrd(excelFile=excelFile,list_index=0)
-res_false = read_xlrd(excelFile=excelFile,list_index=1)
-
+excelFile = "F:\\263\\生产电话2.xlsx"
+res_guwen = read_xlrd(excelFile=excelFile, list_index=1)
+res_kehu1 = read_xlrd(excelFile=excelFile, list_index=2)
+res_kehu2 = read_xlrd(excelFile=excelFile, list_index=3)
+res_false = read_xlrd(excelFile=excelFile, list_index=5)
 
 token = get_Token()
 
-for i in range(0,91):
-    if i > 0 and i <= 30 :
-        create_Meeting_one(token = token , times= i , start_time= 1653307200000 ,party_partyTel_0 = res_true[20+i] ,party_partyTel_1=res_true[120+i] , callOutType_custom= '1')
-    elif i > 30 and i<=60 :
-        create_Meeting_two(token = token , times= i , start_time= 1653307200000 ,party_partyTel_0 = res_true[20+i] ,party_partyTel_1=res_true[120+i] , party_partyTel_2= res_true[210+i] ,callOutType_custom= '6')
-    elif i > 60 :
-        create_Meeting_two(token = token , times= i , start_time= 1653307200000 ,party_partyTel_0 = res_true[20+i] ,party_partyTel_1=res_true[120+i]  ,party_partyTel_2= res_false[i], callOutType_custom= '7')
+for i in range(0, 91):
+    if i > 0 and i <= 30:
+        create_Meeting_one(token=token, times=i, start_time=1653416100000, party_partyTel_0=res_guwen[i],
+                           party_partyTel_1=res_kehu1[i], callOutType_custom='1')
+    elif i > 30 and i <= 60:
+        create_Meeting_two(token=token, times=i, start_time=1653416100000, party_partyTel_0=res_guwen[i],
+                           party_partyTel_1=res_kehu1[i], party_partyTel_2=res_kehu2[i - 29], callOutType_custom='6')
+    elif i > 60:
+        create_Meeting_two(token=token, times=i, start_time=1653416100000, party_partyTel_0=res_guwen[i],
+                           party_partyTel_1=res_kehu1[i], party_partyTel_2=res_false[i - 59], callOutType_custom='7')

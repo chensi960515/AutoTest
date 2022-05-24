@@ -37,7 +37,7 @@ def read_xlrd(excelFile,list_index):
 
 
 if __name__ == '__main__':
-    excelFile = "D:\\263\\接入号.xlsx"
+    excelFile = "F:\\263\\接入号.xlsx"
     res = read_xlrd(excelFile=excelFile,list_index=0)
     res2 =read_xlrd(excelFile=excelFile,list_index=2)
     print(res)
