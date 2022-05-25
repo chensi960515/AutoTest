@@ -50,7 +50,7 @@ def create_Meeting_one(token, times, start_time, party_partyTel_0, party_partyTe
     payload_client_one = json.dumps({
         "token": token,
         "userAccount": "cx@net263.com",
-        "meetingTitle": "第0" + str(times) + "场" + str(partyName_A),
+        "meetingTitle": "第0" + str(times) + "场" + str(party_partyTel_0),
         "startTime": start_time,
         "duration": "120",
         "partyList": [
@@ -93,13 +93,13 @@ def create_Meeting_one(token, times, start_time, party_partyTel_0, party_partyTe
     return response.text
 
 
-def create_Meeting_two(token, times, start_time, partyName_A, partyName_B, partyName_C, callOutType_custom):
+def create_Meeting_two(token, times, start_time, party_partyTel_0,party_partyTel_1 , party_partyTel_2 , callOutType_custom):
     url = "https://apipcs.263.net/api/createMeeting"
 
     payload_client_two = json.dumps({
         "token": token,
         "userAccount": "cx@net263.com",
-        "meetingTitle": "第0" + str(times) + "场" + str(partyName_A),
+        "meetingTitle": "第0" + str(times) + "场" + str(party_partyTel_0),
         "startTime": start_time,
         "duration": "120",
         "partyList": [
