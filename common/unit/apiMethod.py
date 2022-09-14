@@ -10,10 +10,11 @@ import os
 import json
 import logging
 import random
-
 import requests
 import simplejson
 from requests_toolbelt import MultipartEncoder
+from config import API_CONFIG, PROJECT_NAME
+from common.utils.readYaml import write_yaml_data, read_yaml_data
 
 
 def get(headers, address, data, timeout=8, cookies=None):
@@ -148,6 +149,41 @@ def delete(headers, address, data, timeout=8, cookies=None):
                                verify=False)
     try:
         return response.status_code, response.json()
+    except json.decoder.JSONDecodeError:
+        return response.status_code, None
+    except simplejson.errors.JSONDecodeError:
+        return response.status_code, None
+    except Exception as e:
+        logging.exception('ERROR')
+        logging.error(e)
+        raise
+
+
+def save_cookie(headers, address, mine_type, time_out=8, data=None, files=None, cookies=None):
+    """
+    保存cookie信息
+    :param headers: 请求头
+    :param address: 请求地址
+    :param mine_type: 请求类型,用于区分参数格式(form_data,raw)
+    :param time_out: 超时时间
+    :param data:  请求参数
+    :param files: 文件路径
+    :param cookies:
+    :return:
+    """
+
+    if 'data' in mine_type:
+        response = requests.post(url=address, data=data, headers=headers, timeout=time_out, files=files, cookies=cookies, verify=False)
+    else:
+        response = requests.post(url=address, json=data, headers=headers, timeout=time_out, files=files, cookies=cookies, verify=False)
+
+    try:
+        cookies = response.cookies.get_dict()
+        # 读取api配置并且写入最新的cookie信息
+        aconfig = read_yaml_data(API_CONFIG)
+        aconfig[PROJECT_NAME]['cookies'] = cookies
+        write_yaml_data(API_CONFIG, aconfig)
+        logging.debug("cookies已保存,结果为: {}".format(cookies))
     except json.decoder.JSONDecodeError:
         return response.status_code, None
     except simplejson.errors.JSONDecodeError:
